@@ -1660,7 +1660,15 @@ class SpinelCliCmd(Cmd, SpinelCodec):
 
             > reset
         """
-        self.wpan_api.cmd_reset()
+        params = line.split(" ")
+        num = len(params[0])
+        #print(f"num param : {num}, params : {params}, not {not(params[0])}")
+        if num >= 1:
+            # print(type(params[0]))
+            self.wpan_api.cmd_reset(int(params[0]).to_bytes())
+        else:
+            #print("num <= 0")        
+            self.wpan_api.cmd_reset()
 
         self.prop_set_value(SPINEL.PROP_IPv6_ICMP_PING_OFFLOAD, 1)
         self.prop_set_value(SPINEL.PROP_THREAD_RLOC16_DEBUG_PASSTHRU, 1)
@@ -2250,7 +2258,7 @@ class SpinelCliCmd(Cmd, SpinelCodec):
         1 = MAC_FILTER_MODE_PROMISCUOUS	All MAC packets matching network are passed up the stack.
         2 = MAC_FILTER_MODE_MONITOR	All decoded MAC packets are passed up the stack.
         """
-        self.handle_property(line, SPINEL.PROP_MAC_FILTER_MODE, 'B')
+        self.handle_property(line, SPINEL.PROP_MAC_PROMISCUOUS_MODE, 'B')
 
     def complete_ncptun(self, text, _line, _begidx, _endidx):
         """ Subcommand completion handler for ncp-tun command. """
